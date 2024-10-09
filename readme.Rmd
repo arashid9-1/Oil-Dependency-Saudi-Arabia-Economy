@@ -1,0 +1,521 @@
+---
+title: "Impact of Oil Price fluctuations on Saudi Arabia's and testing for Dutch Disease"
+author: "Ali Rashid"
+date: "2024-10-06"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Please Note: The following is still in draft form and not fully complete**
+
+
+## Study Motivation and Overview
+
+Saudi Arabia is making significant efforts to restructure its economy. In 2016, the government launched Saudi Vision 2030, an initiative aimed at diversifying the economy and reducing its heavy fiscal and output reliance on oil. As of 2022, oil accounted for approximately 40% of the country's real GDP [IMF](https://www.elibrary.imf.org/view/journals/002/2022/275/article-A001-en.xml). This study aims to investigate how sensitive the Saudi economy remains to oil price shocks at this critical stage in its economic restructuring. Additionally, the study explores the phenomenon of Dutch Disease — where rising oil demand/prices appreciates the domestic currency, negatively impacting non-oil exports and, in turn, the non-oil sector of the economy. Consequently, this study focuses on the following key questions:
+
+### 1. The impact of oil prices on real Saudi GDP
+
+#### Estimation
+An ARDL model is used to estimate the relationship between oil prices and GDP, assessing how a 1% change in oil prices influences real GDP % growth.
+
+#### Scenario Analysis
+Two alternative scenarios are considered: a 15% and a 30% reduction in oil prices between 2022 and 2024. These simulations explore the potential adverse effects of negative oil price shocks on the Saudi economy.
+
+###  2. The relationship between the Real Effective Exchange Rate (REER), the non-oil sector and oil prices. 
+
+This aspect of the study is explored through two separate ARDL models, with REER and Non-Oil GDP as the dependent variables. The estimation outputs, alongside impulse response functions, help diagnose whether Dutch Disease is a concern for Saudi Arabia.
+
+## Theory/Expectation 
+
+If the economy exhibits signs of Dutch Disease, we would expect to find the following:
+
+- Long-run equilibrium between oil prices and GDP, and potentially between oil prices and the REER.
+- A positive relationship between the REER and oil prices when REER is the dependent variable, indicating currency appreciation due to oil price increases.
+- A negative relationship between the REER and Non-Oil GDP when Non-Oil GDP is the dependent variable, implying that a stronger currency (due to oil revenues) weakens the competitiveness of the non-oil sector.
+
+
+## Key findings
+
+#### No Cointegration Found:
+Both the ARDL bounds test and Johansen test failed to show long-run equilibrium relationships between the variables, indicating a lack of a long-term cointegrating relationships among the variables tested.
+
+#### Oil Prices Significantly Drive GDP
+A 1% increase in oil prices leads to approximately a 0.29% increase in GDP immediately, with further lagged impacts of 0.19% and 0.07% at the first and second lags. This indicates that oil price shocks propagate through the economy over multiple periods.
+
+#### Scenario Analysis Shows Substantial GDP Declines from Oil Price Reductions
+The scenario analysis of 15% and 30% oil price reductions reveals significant negative impacts on GDP. A 30% oil price reduction causes a 17% decline in GDP by 2023, whereas the 15% reduction results in a 8% decline, confirming the Saudi economy's sensitivity to oil price shocks.
+
+#### Negative Relationship Between Oil Prices and REER
+Oil prices are negatively related to the REER. A 1% increase in oil prices leads to a 0.05% decrease in the REER, suggesting that other factors may explain the depreciation of the Saudi currency rather than appreciation as predicted by Dutch Disease theory.
+
+#### REER Positively Impacts Non-Oil GDP
+Instead of reducing non-oil sector competitiveness, REER increases are associated with 0.73% growth in non-oil GDP after two lags.
+
+### Result Implications 
+
+These findings indicate that Saudi Arabia remains heavily sensitive to oil driven growth. The findings do not strongly support the presence of Dutch Disease in the Saudi Arabian economy, at least not in the short-to-medium term in the chosen sample. Instead of oil price increases crowding out the non-oil sector, higher oil prices appear to stimulate non-oil GDP growth. This likely reflects the government's strategic use of oil revenues (as part of Vision 2030) to support non-oil industries and public investment.
+
+The relationship between oil prices and the Real Effective Exchange Rate (REER) further challenges the Dutch Disease hypothesis. While we might expect rising oil prices to appreciate the REER (and thus harm export competitiveness), the data show a negative relationship. One explanation could be that Saudi Arabia’s pegged nominal exchange rate and relatively low inflation compared to its trading partners keep the REER in check, despite higher oil prices. This dampens the negative exchange rate effect on the non-oil sector.
+
+
+## Data and Methodology
+
+### Data
+
+I used 6 variables found either on the Federal Reserve Bank of St.Louis (FRED) or the Saudi Arabia General Authority for Statistics (GASTAT). The data is quarterly, dating from 2010 Q1 to 2023 Q3 (55 observations):
+
+- GDP: Total Real GDP in 2020 SAR millions (GASTAT)
+- Non-Oil GDP: Real GDP generated from non-oil activities, in 2020 SAR millions (GASTAT)
+- OPEC: OPEC Basket Price in $ per barrel (OPEC)
+- Exports: Total Real Exports in 2020 SAR millions (FRED)
+- REER: The Real Effective Exchange Rate (FRED)
+- CPI: Consumer Price Index of Saudi Arabia, base = 2020 (GASTAT)
+
+The variables, if found in nominal forms, were deflated using the CPI variable. The log transformation was used for analytical interpretability. ADF tests concluded all variables were integrated of order 1, except `Exports`, which is stationary at the level. 
+
+### Model Selection
+
+Error Correction Models (ECM) were the preferred option for investigating the short and long run dynamics of the variables. However, if no cointegration exists in the variables, the first differences of the variables were estimated in an Autoregressive Distributed Lag (ARDL) model. The process went as follows:
+
+1. Fit an ARDL model using variable levels, choosing optimal lag structure from information criterion.
+2. Use Pesaran et al. (2001) Bounds test and/or Johansen & Søren (1991) Cointegration test to see if the variables exhibited long run equalibrium relationships. 
+3. If the null hypothesis of the tests were rejected at the 5% level of significance, an ECM model would be fitted using the level and first differences of the variables. Otherwise, the models were estimated using only first differenced variables in the ARDL framework.
+4. Model Diagnostics: residuals were tested for autocorrelation, heteroscedasticity, and normality. Finally, the models were tested for stability. 
+
+### Scenario Analysis
+
+Two new variables, `OPEC85` and `OPEC70`, were created from the original OPEC variable, where the last seven observations were reduced by 15% and 30%, respectively, compared to the actual OPEC Basket Price at the time. The estimated model coefficients for real GDP were then used to simulate the impact of these two negative price shock scenarios. The differences between the simulated results and the baseline GDP series were plotted to visualise the effects of the price shocks on the economy.
+
+
+## Data Cleaning and EDA
+
+The pre-processing, compiling the raw csv files into one dataframe, taking logs and first differences, ADF tests, deflating variables, removing seasonality and creating a correlation matrix of the variables, was done in the `oil_project_SA.ipynb` python notebook. 
+
+```{r Correlation Matrix} 
+knitr::include_graphics("corr_matrix.png")
+
+```
+
+The most striking relationships are that of REER and OPEC (-0.80), Non-oil GDP and REER (0.88), OPEC and CPI (-0.49) and OPEC and GDP (0.32). The preliminary EDA shows very different findings to my presumptions. 
+
+The dataframe was then imported into R for the rest of data processing and analysis.
+
+```{r Libraries Installation}
+
+
+#install.packages("dynlm")
+#install.packages("urca")
+#install.packages("ARDL")
+#install.packages("msm")
+#install.packages("tseries")
+#install.packages("forecast")
+#install.packages("car")
+#install.packages("strucchange")
+
+
+```
+
+
+```{r Loading in Libraries}
+library(strucchange)
+library(car)
+library(tidyverse)
+library(conflicted)
+library(ggplot2)
+library(dplyr)
+library(dynlm)
+library(urca)
+library(ARDL)
+library(msm)
+library(lmtest)
+library(tseries)
+library(zoo)
+library(forecast)
+conflicted::conflicts_prefer(dplyr::lag)
+```
+
+
+```{r Data Cleaning}
+
+df = read.csv('metrics_data2.csv') #Read in the dataframe
+df <- tibble::as_tibble(df)
+df$Quarter <- as.yearqtr(df$Quarter, format = "%YQ%q")
+
+# Create Oil price variables where last 7 periods have 15% and 30% oil reduction from baseline respectively
+last_7_obs <- (nrow(df) - 6):nrow(df) 
+df$log_OPEC85 <- df$log_OPEC 
+df$log_OPEC85[last_7_obs] <- log(df$OPEC[last_7_obs] * 0.85)
+df$log_OPEC70 <- df$log_OPEC 
+df$log_OPEC70[last_7_obs] <- log(df$OPEC[last_7_obs] * 0.70)
+
+# Create Lag and first differences of the new variables to use in the predict()
+# For scenario analysis
+df$L1log_OPEC85 <- lag(df$log_OPEC85, 1)    
+df$dlog_OPEC85 <- c(NA, diff(df$log_OPEC85, lag = 1))             
+df$dL1log_OPEC85 <- lag(df$dlog_OPEC85, 1)   
+df$dL2log_OPEC85 <- lag(df$dlog_OPEC85, 2) 
+df$dL3log_OPEC85 <- lag(df$dlog_OPEC85, 3) 
+df$dL4log_OPEC85 <- lag(df$dlog_OPEC85, 4)
+
+
+df$L1log_OPEC70 <- lag(df$log_OPEC70, 1)    
+df$dlog_OPEC70 <- c(NA, diff(df$log_OPEC70, lag = 1))             
+df$dL1log_OPEC70 <- lag(df$dlog_OPEC70, 1)   
+df$dL2log_OPEC70 <- lag(df$dlog_OPEC70, 2) 
+df$dL3log_OPEC70 <- lag(df$dlog_OPEC70, 3) 
+df$dL4log_OPEC70 <- lag(df$dlog_OPEC70, 4)
+
+# df2 removes the NA rows created from difference 
+df2 <- df[-c(1:4), ]
+dfe <- ts(df, start = c(2010, 2), frequency = 4)
+dfe2 <- ts(df2, start = c(2011, 2), frequency = 4)
+
+# Plotting the different values of OPEC being used
+ggplot(df2, aes(x = Quarter)) +
+  geom_line(aes(y = exp(log_OPEC85), color = "15% Oil Price Reduction")) +
+  geom_line(aes(y = exp(log_OPEC70), color = "30% Oil Price Reduction")) +
+  geom_line(aes(y = OPEC, color = "Baseline")) +
+  scale_color_manual(name = "OPEC",
+                     values = c( 
+                                "15% Oil Price Reduction" = "blue", 
+                                "30% Oil Price Reduction" = "red",
+                     "Baseline" = "black")) +
+  labs(title = 'Baseline Oil Price series and Alternative Scenarios')+
+  theme_minimal()
+
+
+
+```
+
+
+
+## 1. Impact of OPEC Basket Price on Real GDP
+
+### The Model
+
+```{r Testing for Cointegration between GDP and OPEC}
+
+# Using Information criterion to select best fitting model
+gdp_model_auto <- auto_ardl(log_GDP ~ log_OPEC + log_CPI + log_REER, data = dfe, max_order = c(4, 4, 4, 4), selection = 'BIC')
+gdp_model_auto$best_model$order
+
+gdp_ardl <- gdp_model_auto$best_model
+
+# Bounds test for Cointegration 
+gdp_test <- bounds_f_test(gdp_ardl, case =3)
+gdp_test
+
+```
+
+Cannot reject the null hypothesis of "no cointegration" at 5% significance level. Therefore, must construct the model using first differences.
+
+Redoing the auto_ardl() formula using the first differences proposed an ARDL(3,4,3,3) model.
+
+```{r M1 Estimation Results}
+model1 <- ardl(dlog_GDP ~ dlog_OPEC + dlog_Exports + dlog_REER, data = df, order = c(3, 4, 3, 3))
+summary(model1)
+```
+
+- The first lag of GDP is strongly negative (-0.82398), with a very high t-value (-6.172) and a p-value of almost 0. This suggests that past values of GDP have a substantial negative effect on current GDP growth. The second and third lags are also negative and significant, though with smaller effects.
+
+- The current log of OPEC has a strong positive impact on GDP growth (0.28859), with a high t-value (11.491) and a p-value approaching zero. This highlights the strong positive relationship between oil prices and GDP growth in the Saudi economy.
+
+- The coefficient of the first difference of Exports is positive (0.38021) and significant, suggesting that exports are a key driver of GDP growth. Lagged exports (2 and 3 lags) also show positive and significant effects.
+
+- The immediate first difference of the REER variable is not statistically significant. However, the lagged REER variables (lags 1 and 2) show mixed effects, with the second lag having a significant negative impact on GDP (-0.59312) and a p-value of 0.0199.
+
+- The model explains a substantial portion of the variation in GDP growth, with an R-squared of 0.8991, and an adjusted R-squared of 0.8502. This indicates that the model has a good fit with the data.
+
+
+
+```{r M1 Impluse responses}
+model2_multsr <- multipliers(model1, type = 16, se=TRUE)
+
+plot_delay(model2_multsr, facets_ncol = 2, interval = 0.95)
+```
+- dlog_OPEC: oil prices have an initial positive impact on GDP, which gradually diminishes over time but remains consistently above zero, indiacting shock persistance 
+
+- dlog_OPEC: oil prices have an initial positive impact on GDP, which gradually diminishes over time but remains consistently above zero.
+
+- dlog_REER: fluctuating effects over time, with a generally negative impact in some periods, followed by recovery in others. This suggests the relationship between REER and GDP is complex, with exchange rate changes having both positive and negative effects on GDP growth depending on the time horizon.
+
+
+```{r M1 Model Diagnostics}
+
+# Breusch-Godfrey Test for autocorrelation
+bgtest(model1)
+# No autocorrelation 
+
+# Checking for Normality
+jarque.bera.test(residuals(model1))
+# Conclusion:normally distributed
+
+# Breusch-Pagan Test for heteroscedasticity
+bptest(model1)
+# No heteroscedasticity
+
+residuals_model <- residuals(model1)
+
+# CUSUM Test for stability
+cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
+plot(cusum_test)
+
+```
+
+Conclusions:
+- No serial correlation 
+- Normally distributed and homoscedastic residuals 
+- The model is stable 
+
+```{r M1 Model Fit}
+# Plot fitted values 
+plot_fit <- data.frame(
+  Time = df$Quarter[-c(1:4)],
+  dlog_GDP = df$dlog_GDP[-c(1:4)],
+  fitted_values = fitted(model1)
+)
+ggplot(plot_fit, aes(x = Time)) +
+  geom_line(aes(y = dlog_GDP, color = "dlog_GDP")) +  
+  geom_line(aes(y = fitted_values, color = "fitted_values")) +
+  labs(title = "Model Fit",
+       x = "Time", y = "dLog GDP") +
+  scale_color_manual(name = "Legend",
+                     values = c("dlog_GDP" = "black", 
+                                "fitted_values" = "red")) +
+  theme_minimal()
+
+```
+
+
+### Scenario Analysis
+
+Q. What if oil prices slumped from 2021 Q4 onwards? What would be the resulting impact on Real GDP? 
+
+Scenario 1: Oil Prices fell by 15% in treatment period 
+Scenario 2: Oil Prices fell by 30% in treatment period 
+
+
+```{r Scenario Analysis: Period to Period Percentage Change in GDP, warning=FALSE}
+
+model2 <- to_lm(model1)
+
+gdp_newdata85 <- model2$model
+gdp_newdata85$`dlog_OPEC` <- df2$dlog_OPEC85  
+gdp_newdata85$`L(dlog_OPEC, 1)` <- df2$dL1log_OPEC85
+gdp_newdata85$`L(dlog_OPEC, 2)` <- df2$dL2log_OPEC85
+gdp_newdata85$`L(dlog_OPEC, 3)` <- df2$dL3log_OPEC85
+gdp_newdata85$`L(dlog_OPEC, 4)` <- df2$dL4log_OPEC85
+
+gdp_newdata70 <- model2$model
+gdp_newdata70$`dlog_OPEC` <- df2$dlog_OPEC70  
+gdp_newdata70$`L(dlog_OPEC, 1)` <- df2$dL1log_OPEC70
+gdp_newdata70$`L(dlog_OPEC, 2)` <- df2$dL2log_OPEC70
+gdp_newdata70$`L(dlog_OPEC, 3)` <- df2$dL3log_OPEC70
+gdp_newdata70$`L(dlog_OPEC, 4)` <- df2$dL4log_OPEC70
+
+gdp_15 <- predict(model2, newdata = gdp_newdata85)
+gdp_30 <- predict(model2, newdata = gdp_newdata70)
+
+
+# Plot dlog_GDP scenarios ie percentage change in GDP
+plot_data <- data.frame(
+  Time = df2$Quarter,
+  dlog_GDP = df2$dlog_GDP,    
+  Forecast_15 = gdp_15,    
+  Forecast_30 = gdp_30     
+)
+
+ggplot(plot_data, aes(x = Time)) +
+  geom_line(aes(y = Forecast_15*100, color = "15% Oil Price Reduction")) +
+  geom_line(aes(y = Forecast_30*100, color = "30% Oil Price Reduction")) +
+  geom_line(aes(y = dlog_GDP*100, color = "Baseline")) +
+  geom_vline(xintercept = as.numeric(as.yearqtr("2021 Q4")), linetype = "dashed", color = "grey", size = 0.5) +
+  labs(title = "Scenario Analysis: Oil Price Sensitivities on GDP (Period to Period)",
+       x = "Time", y = "% Change in GDP") +
+  scale_color_manual(name = "Scenario",
+                     values = c("Baseline" = "black", 
+                                "15% Oil Price Reduction" = "blue", 
+                                "30% Oil Price Reduction" = "red")) +
+  theme_minimal()
+
+
+```
+
+
+```{r Scenario Analysis: Impact on Real GDP}
+
+
+# Cumulative sum to get log-level GDP from differences
+log_GDP_15 <- as.vector(df2$log_GDP[2] + cumsum(gdp_15[2:length((gdp_15))]))
+log_GDP_30 <- as.vector(df2$log_GDP[2] + cumsum(gdp_30[2:length((gdp_30))]))
+fitted_GDP <- as.vector(df2$log_GDP[2] + cumsum(fitted(model2)[2:length(fitted(model2))]))
+
+
+plot_data <- data.frame(
+  Time = as.vector(df2$Quarter)[2:length(df2$Quarter)],
+  Baseline_GDP = fitted_GDP,   
+  Forecast_15 = log_GDP_15,   
+  Forecast_30 = log_GDP_30   
+)
+
+ggplot(plot_data, aes(x = Time)) +
+  geom_line(aes(y = Forecast_15, color = "15% Oil Price Reduction")) +
+  geom_line(aes(y = Forecast_30, color = "30% Oil Price Reduction")) +
+  geom_line(aes(y = Baseline_GDP, color = "Baseline")) +
+  geom_vline(xintercept = as.numeric(as.yearqtr("2021 Q4")), linetype = "dashed", color = "grey", size = 1) +
+  labs(title = "Scenario Analysis: Oil Price Reductions and Log-Level GDP",
+       x = "Time", y = "Log Real GDP") +
+  scale_color_manual(name = "Scenario",
+                     values = c("Baseline" = "black", 
+                                "15% Oil Price Reduction" = "blue", 
+                                "30% Oil Price Reduction" = "red")) +
+  theme_minimal()
+
+
+
+```
+* Analysis
+
+## Real Effective Exchnage Rate 
+
+
+```{r M2 Cointegration test}
+
+test_data <- df %>%
+  select(log_REER, log_OPEC)
+
+johansen_test <- ca.jo(test_data, type = "trace", ecdet = "const", K = 2)  
+summary(johansen_test)
+
+```
+
+Conclusion: Insufficient evidence for long-run equilibrium between oil prices and the real effective exchange rate 
+
+
+```{r Model Fit and Estimation}
+
+reer_model_auto <- auto_ardl(dlog_REER ~ dlog_OPEC +dlog_Non_oil_GDP + dlog_CPI , data = dfe, max_order = c(4, 4, 4, 4), selection = 'AIC')
+summary(reer_model_auto$best_model)
+
+```
+
+
+* Analysis
+
+
+
+
+```{r M2 Impluse Responses}
+model3 <- reer_model_auto$best_model
+model3_multsr <- multipliers(model3, type = 8, se=TRUE)
+plot_delay(model3_multsr, facets_ncol = 2, interval = 0.95)
+```
+
+
+* Analysis
+
+```{r M2 Diagnostic Tests}
+
+bgtest(model3)
+# No autocorrelation 
+
+jarque.bera.test(residuals(model3))
+# normally distributed
+
+bptest(model3)
+# No heteroscedasticity
+
+residuals_model <- residuals(model3)
+
+# CUSUM Test for stability
+cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
+plot(cusum_test)
+```
+
+* Comment
+
+
+
+### 3. Non-Oil GDP
+
+Objective: Investigate the relationship between ...
+
+```{r M3 Cointegration Test }
+
+po_test <- ca.po(df[,c("log_Non_oil_GDP", "log_OPEC")], type="Pz")
+summary(po_test)
+
+```
+
+Conclusion: No cointegration 
+
+
+
+```{r M3 Model Estimation}
+
+non_oil_ardl <- ardl(dlog_Non_oil_GDP ~ dlog_OPEC  + dlog_REER , data = dfe, order = c(4, 3, 4))
+summary(non_oil_ardl)
+
+```
+
+
+
+```{r M3 Impluse Responses}
+model4_multsr <- multipliers(non_oil_ardl, type = 8, se=TRUE)
+plot_delay(model4_multsr, facets_ncol = 2, interval = 0.95)
+
+```
+
+
+```{r M3 Model Diagnostic tests}
+# Breusch-Godfrey Test for autocorrelation
+bgtest(non_oil_ardl)
+# No autocorrelation 
+
+# Checking for Normality
+jarque.bera.test(residuals(non_oil_ardl))
+# Conclusion:normally distributed
+
+# Breusch-Pagan Test for heteroscedasticity
+bptest(non_oil_ardl)
+# No heteroscedasticity
+
+residuals_model <- residuals(non_oil_ardl)
+
+# CUSUM Test for stability
+cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
+plot(cusum_test)
+
+```
+
+
+
+
+
+## References 
+
+1. Pesaran M. H., Shin Y., Smith R. J. (2001) BOUNDS TESTING APPROACHES TO THE ANALYSIS OF LEVEL RELATIONSHIPS, Journal of Applied Econometrics 16: 289 - 326. doi:10:1002jae.616 
+2. Johansen, Søren (1991). "Estimation and Hypothesis Testing of Cointegration Vectors in Gaussian Vector Autoregressive Models". Econometrica. 59 (6): 1551–1580. doi:10.2307/2938278. JSTOR 2938278.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
