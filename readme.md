@@ -1,4 +1,4 @@
-Impact of Oil Price fluctuations on Saudi Arabia’s and testing for Dutch
+Impact of Oil Price Fluctuations on Saudi Arabia’s Economy and testing for Dutch
 Disease
 ================
 Ali Rashid
@@ -441,7 +441,7 @@ model2_multsr <- multipliers(model1, type = 16, se=TRUE)
 plot_delay(model2_multsr, facets_ncol = 2, interval = 0.95)
 ```
 
-![](README_files/figure-gfm/M1%20Impluse%20responses-1.png)<!-- --> -
+![](irf1.png)<!-- --> -
 dlog_OPEC: oil prices have an initial positive impact on GDP, which
 gradually diminishes over time but remains consistently above zero,
 indiacting shock persistance
@@ -502,7 +502,7 @@ cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
 plot(cusum_test)
 ```
 
-![](README_files/figure-gfm/M1%20Model%20Diagnostics-1.png)<!-- -->
+![](cusum1.png)<!-- -->
 
 Conclusions: - No serial correlation - Normally distributed and
 homoscedastic residuals - The model is stable
@@ -525,7 +525,7 @@ ggplot(plot_fit, aes(x = Time)) +
   theme_minimal()
 ```
 
-![](README_files/figure-gfm/M1%20Model%20Fit-1.png)<!-- -->
+![](model_fit11.png)<!-- -->
 
 ### Scenario Analysis
 
@@ -578,7 +578,7 @@ ggplot(plot_data, aes(x = Time)) +
   theme_minimal()
 ```
 
-![](README_files/figure-gfm/Scenario%20Analysis:%20Period%20to%20Period%20Percentage%20Change%20in%20GDP-1.png)<!-- -->
+![](sa1.png)<!-- -->
 
 ``` r
 # Cumulative sum to get log-level GDP from differences
@@ -608,7 +608,7 @@ ggplot(plot_data, aes(x = Time)) +
   theme_minimal()
 ```
 
-![](README_files/figure-gfm/Scenario%20Analysis:%20Impact%20on%20Real%20GDP-1.png)<!-- -->
+![](sa2.png)<!-- -->
 \* Analysis
 
 ## Real Effective Exchnage Rate
@@ -698,7 +698,7 @@ model3_multsr <- multipliers(model3, type = 8, se=TRUE)
 plot_delay(model3_multsr, facets_ncol = 2, interval = 0.95)
 ```
 
-![](README_files/figure-gfm/M2%20Impluse%20Responses-1.png)<!-- -->
+![](irf2.png)<!-- -->
 
 - Analysis
 
@@ -746,7 +746,7 @@ cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
 plot(cusum_test)
 ```
 
-![](README_files/figure-gfm/M2%20Diagnostic%20Tests-1.png)<!-- -->
+![](cusum2.png)<!-- -->
 
 - Comment
 
@@ -863,7 +863,7 @@ model4_multsr <- multipliers(non_oil_ardl, type = 8, se=TRUE)
 plot_delay(model4_multsr, facets_ncol = 2, interval = 0.95)
 ```
 
-![](README_files/figure-gfm/M3%20Impluse%20Responses-1.png)<!-- -->
+![](irf3.png)<!-- -->
 
 ``` r
 # Breusch-Godfrey Test for autocorrelation
@@ -912,7 +912,7 @@ cusum_test <- efp(residuals_model ~ 1, type = "Rec-CUSUM")
 plot(cusum_test)
 ```
 
-![](README_files/figure-gfm/M3%20Model%20Diagnostic%20tests-1.png)<!-- -->
+![](cusum3.png)<!-- -->
 
 ## References
 
