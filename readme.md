@@ -327,7 +327,7 @@ ggplot(df2, aes(x = Quarter)) +
   theme_minimal()
 ```
 
-![](README_files/figure-gfm/Data%20Cleaning-1.png)<!-- -->
+![](000014.png)<!-- -->
 
 ## 1. Impact of OPEC Basket Price on Real GDP
 
